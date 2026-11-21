@@ -730,3 +730,372 @@ a {
     }
 
 }
+
+/* =========================================
+   CYBERSAATHI - INTERACTIVE MESSAGE SCANNER
+========================================= */
+
+.scanner-section {
+    padding: 95px 0;
+    background: #E9EDE0;
+}
+
+.scanner-grid {
+    display: grid;
+    grid-template-columns: 0.8fr 1.2fr;
+    gap: 65px;
+    align-items: center;
+}
+
+.scanner-intro h2 {
+    margin: 20px 0;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(38px, 5vw, 55px);
+    font-weight: 400;
+    line-height: 1.13;
+    letter-spacing: -2px;
+}
+
+.scanner-intro h2 span {
+    display: block;
+    color: #738B55;
+    font-style: italic;
+}
+
+.scanner-description {
+    max-width: 420px;
+    color: #66736A;
+    font-size: 15px;
+    line-height: 1.9;
+}
+
+.scanner-trust-note {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin-top: 28px;
+    color: #66736A;
+    font-size: 12px;
+}
+
+.scanner-panel {
+    padding: 30px;
+    border: 1px solid #DFE2D7;
+    border-radius: 20px;
+    background: #FFFFFF;
+    box-shadow: 0 20px 55px rgba(23, 35, 31, 0.07);
+}
+
+.scanner-panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.scanner-panel-header h3 {
+    margin: 8px 0 0;
+    color: #17231F;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 27px;
+    font-weight: 400;
+}
+
+.scanner-icon {
+    width: 45px;
+    height: 45px;
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    border-radius: 13px;
+    background: #E4EBCD;
+    color: #17231F;
+    font-size: 25px;
+}
+
+#message-scan-form label {
+    display: block;
+    margin-bottom: 10px;
+    color: #17231F;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+#message-input {
+    display: block;
+    width: 100%;
+    min-height: 150px;
+    padding: 16px;
+    resize: vertical;
+    border: 1px solid #DCE1D5;
+    border-radius: 10px;
+    outline: none;
+    background: #F9FAF6;
+    color: #17231F;
+    font: inherit;
+    font-size: 14px;
+    line-height: 1.7;
+    transition: border-color 0.2s ease,
+                box-shadow 0.2s ease;
+}
+
+#message-input::placeholder {
+    color: #89958B;
+}
+
+#message-input:focus {
+    border-color: #819C55;
+    box-shadow: 0 0 0 3px rgba(129, 156, 85, 0.15);
+}
+
+.scanner-meta {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 10px 0 17px;
+    color: #78847A;
+    font-size: 10px;
+}
+
+.scan-button {
+    width: 100%;
+    min-height: 51px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    padding: 13px 18px;
+    border: 0;
+    border-radius: 9px;
+    background: #17231F;
+    color: #FFFFFF;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s ease,
+                transform 0.2s ease;
+}
+
+.scan-button .button-arrow {
+    color: #C8F169;
+}
+
+.scan-button:hover:not(:disabled) {
+    background: #30443A;
+    transform: translateY(-1px);
+}
+
+.scan-button:focus-visible {
+    outline: 3px solid #819C55;
+    outline-offset: 3px;
+}
+
+.scan-button:disabled {
+    opacity: 0.75;
+    cursor: wait;
+}
+
+.loading-spinner {
+    width: 15px;
+    height: 15px;
+    border: 2px solid rgba(255, 255, 255, 0.35);
+    border-top-color: #C8F169;
+    border-radius: 50%;
+    animation: scanner-spin 0.7s linear infinite;
+}
+
+@keyframes scanner-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.scan-status {
+    min-height: 18px;
+    margin: 13px 0 0;
+    color: #78847A;
+    font-size: 11px;
+    line-height: 1.6;
+}
+
+.scan-status.error {
+    color: #B34E3E;
+}
+
+.scan-result[hidden],
+.loading-spinner[hidden] {
+    display: none !important;
+}
+
+.result-divider {
+    height: 1px;
+    margin: 25px 0;
+    background: #E2E6DC;
+}
+
+.result-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+}
+
+.result-heading h3 {
+    margin: 7px 0 0;
+    color: #17231F;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 26px;
+    font-weight: 400;
+}
+
+.risk-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 13px;
+    border-radius: 30px;
+    font-size: 11px;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+.risk-high {
+    background: #FBE4DF;
+    color: #A43E30;
+}
+
+.risk-medium {
+    background: #F8EED4;
+    color: #87601C;
+}
+
+.risk-low {
+    background: #E5EFD8;
+    color: #46672D;
+}
+
+.indicator-score {
+    margin: 18px 0 10px;
+    color: #66736A;
+    font-size: 12px;
+}
+
+.indicator-score strong {
+    color: #17231F;
+    font-size: 15px;
+}
+
+.indicator-score span {
+    font-size: 10px;
+}
+
+.result-summary {
+    color: #435249;
+    font-size: 13px;
+    line-height: 1.8;
+}
+
+.findings-container {
+    margin-top: 23px;
+}
+
+.findings-container h4 {
+    margin: 0 0 12px;
+    color: #17231F;
+    font-size: 13px;
+}
+
+.findings-list {
+    display: grid;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.finding-item {
+    padding: 14px;
+    border: 1px solid #E3E7DE;
+    border-radius: 10px;
+    background: #F9FAF6;
+}
+
+.finding-item strong {
+    display: block;
+    color: #26372E;
+    font-size: 12px;
+}
+
+.finding-item p {
+    margin: 5px 0 0;
+    color: #66736A;
+    font-size: 11px;
+    line-height: 1.7;
+}
+
+.no-findings {
+    color: #66736A;
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+.result-disclaimer {
+    margin: 20px 0 0;
+    padding: 12px;
+    border-left: 3px solid #C8F169;
+    background: #F5F7EF;
+    color: #68756A;
+    font-size: 10px;
+    line-height: 1.7;
+}
+
+
+/* Scanner responsive layout */
+
+@media (max-width: 850px) {
+
+    .scanner-grid {
+        grid-template-columns: 1fr;
+        gap: 35px;
+    }
+
+    .scanner-intro {
+        max-width: 600px;
+    }
+
+}
+
+@media (max-width: 600px) {
+
+    .scanner-section {
+        padding: 65px 0;
+    }
+
+    .scanner-panel {
+        padding: 19px;
+    }
+
+    .scanner-panel-header h3 {
+        font-size: 23px;
+    }
+
+    .result-heading h3 {
+        font-size: 22px;
+    }
+
+    .risk-badge {
+        padding: 7px 10px;
+    }
+
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    .loading-spinner {
+        animation: none;
+    }
+
+}

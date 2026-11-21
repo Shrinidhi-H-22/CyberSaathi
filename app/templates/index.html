@@ -186,6 +186,191 @@ CyberSaathi | Pause. Check. Stay safe.
 </section>
 
 
+<!-- INTERACTIVE MESSAGE SCANNER -->
+
+<section class="scanner-section" id="scanner">
+
+    <div class="container scanner-grid">
+
+        <div class="scanner-intro">
+
+            <p class="eyebrow">
+                YOUR FIRST DIGITAL SAFETY CHECK
+            </p>
+
+            <h2>
+                Something feels off?
+                <span>Let's look closer.</span>
+            </h2>
+
+            <p class="scanner-description">
+                Paste a suspicious message and let CyberSaathi
+                examine it for common warning signs.
+                Understand what needs your attention before
+                you decide what to do.
+            </p>
+
+            <div class="scanner-trust-note">
+                <span class="status-dot"></span>
+                Clear explanations. No guaranteed verdicts.
+            </div>
+
+        </div>
+
+
+        <div class="scanner-panel">
+
+            <div class="scanner-panel-header">
+
+                <div>
+                    <p class="card-kicker">
+                        MESSAGE ANALYSIS
+                    </p>
+
+                    <h3>What did you receive?</h3>
+                </div>
+
+                <span class="scanner-icon" aria-hidden="true">
+                    ✳
+                </span>
+
+            </div>
+
+
+            <form id="message-scan-form">
+
+                <label for="message-input">
+                    Paste your suspicious message
+                </label>
+
+                <textarea
+                    id="message-input"
+                    name="message"
+                    rows="6"
+                    maxlength="5000"
+                    required
+                    placeholder="Paste the SMS, WhatsApp message or other text you want to examine..."
+                ></textarea>
+
+                <div class="scanner-meta">
+
+                    <span id="character-count">
+                        0 / 5000 characters
+                    </span>
+
+                    <span>
+                        Maximum 5000 characters
+                    </span>
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="scan-button"
+                    id="analyze-button"
+                >
+
+                    <span class="button-text">
+                        Analyse message
+                    </span>
+
+                    <span
+                        class="loading-spinner"
+                        id="loading-spinner"
+                        hidden
+                        aria-hidden="true"
+                    ></span>
+
+                    <span class="button-arrow" aria-hidden="true">
+                        ↗
+                    </span>
+
+                </button>
+
+
+                <p
+                    class="scan-status"
+                    id="scan-status"
+                    role="status"
+                    aria-live="polite"
+                >
+                    Your message is analysed locally by our current
+                    rule-based detection system.
+                </p>
+
+            </form>
+
+
+            <!-- ANALYSIS RESULTS -->
+
+            <div
+                class="scan-result"
+                id="scan-result"
+                hidden
+                aria-live="polite"
+            >
+
+                <div class="result-divider"></div>
+
+                <div class="result-heading">
+
+                    <div>
+                        <p class="card-kicker">
+                            ANALYSIS SUMMARY
+                        </p>
+
+                        <h3 id="result-title">
+                            Analysis complete
+                        </h3>
+                    </div>
+
+                    <span
+                        class="risk-badge"
+                        id="risk-badge"
+                    ></span>
+
+                </div>
+
+
+                <p class="indicator-score">
+                    Indicator score:
+                    <strong id="indicator-score">0</strong>
+                    <span> (not a probability)</span>
+                </p>
+
+
+                <p
+                    class="result-summary"
+                    id="result-summary"
+                ></p>
+
+
+                <div class="findings-container">
+
+                    <h4>What did we notice?</h4>
+
+                    <ul
+                        class="findings-list"
+                        id="findings-list"
+                    ></ul>
+
+                </div>
+
+
+                <p
+                    class="result-disclaimer"
+                    id="result-disclaimer"
+                ></p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
 
 <!-- HOW IT WORKS SECTION -->
 
