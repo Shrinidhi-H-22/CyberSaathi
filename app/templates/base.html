@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <meta name="description"
+          content="CyberSaathi makes digital safety easier to understand.">
+
+    <meta name="theme-color" content="#F3F4EC">
+
+    <title>
+        {% block title %}CyberSaathi | Pause. Check. Stay safe.{% endblock %}
+    </title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+    <a class="skip-link" href="#main">
+        Skip to content
+    </a>
+
+    <!-- Website Navigation -->
+    <header class="site-header">
+
+        <div class="container header-inner">
+
+            <a class="brand" href="{{ url_for('main.home') }}">
+
+                <span class="brand-mark" aria-hidden="true">✳</span>
+
+                <span class="brand-name">
+                    cybersaathi<span class="brand-period">.</span>
+                </span>
+
+            </a>
+
+            <nav class="site-nav" aria-label="Main navigation">
+
+                <a href="#how-it-works" class="nav-link">
+                    How it works
+                </a>
+
+                <a href="#about" class="nav-link">
+                    About
+                </a>
+
+                <a href="#about" class="nav-cta">
+                    Our approach <span aria-hidden="true">↗</span>
+                </a>
+
+            </nav>
+
+        </div>
+
+    </header>
+
+
+    <!-- Main Website Content -->
+    <main id="main">
+
+        {% block content %}
+        {% endblock %}
+
+    </main>
+
+
+    <!-- Website Footer -->
+    <footer class="site-footer">
+
+        <div class="container footer-inner">
+
+            <div>
+                <a class="brand footer-brand"
+                   href="{{ url_for('main.home') }}">
+
+                    <span class="brand-mark" aria-hidden="true">✳</span>
+
+                    <span class="brand-name">
+                        cybersaathi<span class="brand-period">.</span>
+                    </span>
+
+                </a>
+
+                <p class="footer-tagline">
+                    Pause. Check. Stay safe.
+                </p>
+            </div>
+
+            <div class="footer-credit">
+
+                <p>
+                    Designed &amp; developed by
+                </p>
+
+                <strong>Shrinidhi</strong>
+
+                <span class="footer-heart" aria-hidden="true"></span>
+
+            </div>
+
+        </div>
+
+        <div class="container footer-bottom">
+            <p>CyberSaathi · Your Digital Safety Companion</p>
+            <p>Built with care. Designed for awareness.</p>
+        </div>
+
+    </footer>
+
+</body>
+</html>
