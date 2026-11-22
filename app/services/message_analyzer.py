@@ -1,9 +1,14 @@
 
 import re
 
+from app.services.url_analyzer import analyze_url
 
-# Maximum message size accepted by this analyzer.
+
+# Maximum message length accepted by the analyzer.
 MAX_MESSAGE_LENGTH = 5000
+
+# Maximum unique URLs to examine in one message.
+MAX_LINKS_PER_MESSAGE = 10
 
 
 # Rule 1: Identify urgent language.
@@ -43,8 +48,7 @@ SENSITIVE_REQUEST_PATTERNS = (
 )
 
 
-# Avoid flagging common safety advice such as
-# "Never share your OTP".
+# Avoid flagging common safety advice.
 NEGATED_ACTION_PATTERN = re.compile(
     r"\b(?:never|don['’]t|do not|shouldn['’]t|"
     r"should not|must not)\s*$",
@@ -52,7 +56,7 @@ NEGATED_ACTION_PATTERN = re.compile(
 )
 
 
-# Rule 4: Identify common prize and reward bait.
+# Rule 4: Identify prize and reward bait.
 PRIZE_PATTERN = re.compile(
     r"\b(?:you have won|you are a winner|lottery|"
     r"prize|claim (?:your )?(?:reward|prize))\b",
@@ -60,21 +64,49 @@ PRIZE_PATTERN = re.compile(
 )
 
 
-# Identify whether the message contains a website link.
+# Extract HTTP, HTTPS and www links from messages.
 URL_PATTERN = re.compile(
     r"\b(?:https?://|www\.)[^\s<>()]+",
     re.IGNORECASE
 )
 
 
+def extract_urls(message):
+    """
+    Extract unique URLs from a message.
+
+    Trailing punctuation is removed so that a period
+    at the end of a sentence is not included in the URL.
+    """
+
+    extracted_urls = []
+    seen_urls = set()
+
+    for match in URL_PATTERN.finditer(message):
+
+        candidate = match.group(0).rstrip(".,!?;:)]}")
+
+        if not candidate:
+            continue
+
+        if candidate not in seen_urls:
+
+            seen_urls.add(candidate)
+            extracted_urls.append(candidate)
+
+    return extracted_urls
+
+
 def has_sensitive_information_request(message):
-    """Check whether the message asks for sensitive information."""
+    """Check whether the message requests sensitive information."""
 
     for pattern in SENSITIVE_REQUEST_PATTERNS:
 
         for match in pattern.finditer(message):
 
-            prefix = message[max(0, match.start() - 35):match.start()]
+            prefix = message[
+                max(0, match.start() - 35):match.start()
+            ]
 
             if NEGATED_ACTION_PATTERN.search(prefix):
                 continue
@@ -86,14 +118,10 @@ def has_sensitive_information_request(message):
 
 def analyze_message(message):
     """
-    Analyze a message using basic, explainable rules.
+    Analyse a message and its extracted website links.
 
-    Returns a dictionary containing:
-    - risk_level
-    - indicator_score
-    - findings
-    - summary
-    - disclaimer
+    This function uses local rule-based checks.
+    It does not visit or contact any website.
     """
 
     if not isinstance(message, str):
@@ -110,7 +138,7 @@ def analyze_message(message):
         )
 
     findings = []
-    indicator_score = 0
+    message_indicator_score = 0
 
     # Check urgent language.
     if URGENCY_PATTERN.search(message):
@@ -125,7 +153,7 @@ def analyze_message(message):
             "points": 2
         })
 
-        indicator_score += 2
+        message_indicator_score += 2
 
     # Check account threats.
     if ACCOUNT_THREAT_PATTERN.search(message):
@@ -140,9 +168,9 @@ def analyze_message(message):
             "points": 2
         })
 
-        indicator_score += 2
+        message_indicator_score += 2
 
-    # Check requests for sensitive information.
+    # Check sensitive information requests.
     sensitive_request = has_sensitive_information_request(message)
 
     if sensitive_request:
@@ -151,14 +179,14 @@ def analyze_message(message):
             "code": "sensitive_information_request",
             "label": "Sensitive information requested",
             "description": (
-                "The message appears to ask for information such "
-                "as an OTP, password, PIN or card details. "
+                "The message appears to request information "
+                "such as an OTP, password, PIN or card details. "
                 "Never share these in response to an unsolicited message."
             ),
             "points": 4
         })
 
-        indicator_score += 4
+        message_indicator_score += 4
 
     # Check prize-related language.
     if PRIZE_PATTERN.search(message):
@@ -173,58 +201,148 @@ def analyze_message(message):
             "points": 1
         })
 
-        indicator_score += 1
+        message_indicator_score += 1
 
-    # Identify links without claiming to verify them.
-    if URL_PATTERN.search(message):
+    # Extract unique URLs from the message.
+    extracted_urls = extract_urls(message)
+
+    # Analyse no more than the configured number of links.
+    urls_to_analyze = extracted_urls[:MAX_LINKS_PER_MESSAGE]
+
+    link_analyses = []
+
+    for link_number, extracted_url in enumerate(
+        urls_to_analyze,
+        start=1
+    ):
+
+        try:
+
+            url_result = analyze_url(extracted_url)
+
+            link_analyses.append({
+                "link_number": link_number,
+                "hostname": url_result["hostname"],
+                "risk_level": url_result["risk_level"],
+                "indicator_score": url_result["indicator_score"],
+                "findings": url_result["findings"],
+                "summary": url_result["summary"],
+                "analysis_status": "completed"
+            })
+
+        except (ValueError, TypeError):
+
+            # Keep the message analysis running even when one
+            # extracted URL cannot be parsed.
+            link_analyses.append({
+                "link_number": link_number,
+                "hostname": None,
+                "risk_level": "Not analyzed",
+                "indicator_score": 0,
+                "findings": [],
+                "summary": (
+                    "This extracted link could not be structurally "
+                    "analysed. Check it carefully before interacting."
+                ),
+                "analysis_status": "not_analyzed"
+            })
+
+    # Record the presence of links separately from their analysis.
+    if extracted_urls:
 
         findings.append({
             "code": "link_present",
-            "label": "Website link included",
+            "label": "Website links included",
             "description": (
-                "The message contains a website link. "
-                "Its destination and reputation have not "
-                "been checked by this message analyzer."
+                "The message contains website links. "
+                "Their structural warning signs are examined "
+                "separately in the link analysis below."
             ),
             "points": 0
         })
 
-    # Calculate the preliminary risk category.
-    if sensitive_request or indicator_score >= 5:
+    # Calculate combined indicator scores.
+    url_indicator_score = sum(
+        item["indicator_score"]
+        for item in link_analyses
+    )
+
+    combined_indicator_score = (
+        message_indicator_score + url_indicator_score
+    )
+
+    # Determine whether any examined URL has High indicators.
+    high_risk_url_found = any(
+        item["risk_level"] == "High"
+        for item in link_analyses
+    )
+
+    # Determine the combined preliminary risk category.
+    if (
+        sensitive_request
+        or high_risk_url_found
+        or combined_indicator_score >= 5
+    ):
+
         risk_level = "High"
 
         summary = (
-            "Several concerning indicators were found. "
-            "Do not share sensitive information or follow "
-            "the message's instructions. Verify independently "
-            "through the organisation's official channel."
+            "The message or one of its extracted links contains "
+            "several concerning indicators. Do not share sensitive "
+            "information or follow suspicious instructions. "
+            "Verify independently through an official channel."
         )
 
-    elif indicator_score >= 2:
+    elif combined_indicator_score >= 2:
+
         risk_level = "Medium"
 
         summary = (
-            "Some warning signs were found. Check the sender "
-            "through a trusted channel before taking action."
+            "Some warning signs were found in the message "
+            "or its extracted links. Check the information "
+            "carefully before taking action."
         )
 
     else:
+
         risk_level = "Low"
 
         summary = (
-            "These basic checks did not find strong warning signs. "
-            "This does not prove that the message is safe."
+            "These configured checks did not find strong warning "
+            "signs. This does not prove that the message or "
+            "its links are safe."
+        )
+
+    # Report if the message contained more links than the limit.
+    links_not_analyzed = max(
+        0,
+        len(extracted_urls) - MAX_LINKS_PER_MESSAGE
+    )
+
+    if links_not_analyzed:
+
+        summary += (
+            f" Additionally, {links_not_analyzed} link(s) "
+            "were not analysed because the per-message link limit "
+            "was reached."
         )
 
     return {
         "risk_level": risk_level,
-        "indicator_score": indicator_score,
+        "indicator_score": combined_indicator_score,
+        "message_indicator_score": message_indicator_score,
+        "url_indicator_score": url_indicator_score,
+        "link_count": len(extracted_urls),
+        "links_analyzed": len(link_analyses),
+        "links_not_analyzed": links_not_analyzed,
         "findings": findings,
+        "link_analyses": link_analyses,
         "summary": summary,
         "disclaimer": (
             "This is a preliminary rule-based analysis, not "
-            "a definitive fraud verdict. Sender identity, "
-            "domain reputation and link destinations are "
-            "not verified by this analyzer."
+            "a definitive fraud verdict. Extracted links are "
+            "examined structurally only. CyberSaathi does not "
+            "visit websites or verify their ownership, reputation, "
+            "DNS records, redirects, certificates or page content."
         )
     }

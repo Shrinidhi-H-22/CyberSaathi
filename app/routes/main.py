@@ -6,6 +6,11 @@ from app.services.message_analyzer import (
     analyze_message
 )
 
+from app.services.url_analyzer import (
+    MAX_URL_LENGTH,
+    analyze_url
+)
+
 
 # Create the main website blueprint
 main_bp = Blueprint("main", __name__)
@@ -21,13 +26,11 @@ def home():
 @main_bp.route("/api/analyze-message", methods=["POST"])
 def analyze_message_api():
 
-    # Only accept JSON requests
     if not request.is_json:
         return jsonify({
             "error": "Please send the message as JSON."
         }), 415
 
-    # Read the submitted JSON data
     data = request.get_json(silent=True)
 
     if not isinstance(data, dict):
@@ -35,7 +38,6 @@ def analyze_message_api():
             "error": "Invalid JSON request."
         }), 400
 
-    # Get the message
     message = data.get("message")
 
     if not isinstance(message, str):
@@ -43,13 +45,11 @@ def analyze_message_api():
             "error": "Please provide a valid text message."
         }), 400
 
-    # Reject empty messages
     if not message.strip():
         return jsonify({
             "error": "Please enter a message to analyze."
         }), 400
 
-    # Check the message length
     if len(message) > MAX_MESSAGE_LENGTH:
         return jsonify({
             "error": (
@@ -58,7 +58,6 @@ def analyze_message_api():
             )
         }), 400
 
-    # Analyze the message
     try:
         result = analyze_message(message)
 
@@ -67,5 +66,51 @@ def analyze_message_api():
             "error": str(error)
         }), 400
 
-    # Return the analysis result
+    return jsonify(result), 200
+
+
+# URL analysis API
+@main_bp.route("/api/analyze-url", methods=["POST"])
+def analyze_url_api():
+
+    if not request.is_json:
+        return jsonify({
+            "error": "Please send the URL as JSON."
+        }), 415
+
+    data = request.get_json(silent=True)
+
+    if not isinstance(data, dict):
+        return jsonify({
+            "error": "Invalid JSON request."
+        }), 400
+
+    url = data.get("url")
+
+    if not isinstance(url, str):
+        return jsonify({
+            "error": "Please provide a valid URL."
+        }), 400
+
+    if not url.strip():
+        return jsonify({
+            "error": "Please enter a URL to analyze."
+        }), 400
+
+    if len(url.strip()) > MAX_URL_LENGTH:
+        return jsonify({
+            "error": (
+                f"URL cannot exceed "
+                f"{MAX_URL_LENGTH} characters."
+            )
+        }), 400
+
+    try:
+        result = analyze_url(url)
+
+    except ValueError as error:
+        return jsonify({
+            "error": str(error)
+        }), 400
+
     return jsonify(result), 200

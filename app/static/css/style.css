@@ -1099,3 +1099,150 @@ a {
     }
 
 }
+
+/* =========================================
+   CYBERSAATHI - URL SCANNER
+========================================= */
+
+.url-scanner-section {
+    padding: 95px 0;
+    background: #F3F4EC;
+}
+
+.url-scanner-grid {
+    display: grid;
+    grid-template-columns: 0.8fr 1.2fr;
+    gap: 65px;
+    align-items: center;
+}
+
+.url-scanner-intro h2 {
+    margin: 20px 0;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(38px, 5vw, 55px);
+    font-weight: 400;
+    line-height: 1.13;
+    letter-spacing: -2px;
+}
+
+.url-scanner-intro h2 span {
+    display: block;
+    color: #738B55;
+    font-style: italic;
+}
+
+.url-description {
+    max-width: 420px;
+    color: #66736A;
+    font-size: 15px;
+    line-height: 1.9;
+}
+
+.url-scanner-panel {
+    padding: 30px;
+    border: 1px solid #DFE2D7;
+    border-radius: 20px;
+    background: #FFFFFF;
+    box-shadow: 0 20px 55px rgba(23, 35, 31, 0.07);
+}
+
+.url-panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.url-panel-header h3 {
+    margin: 8px 0 0;
+    color: #17231F;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 26px;
+    font-weight: 400;
+}
+
+#url-scan-form label {
+    display: block;
+    margin-bottom: 10px;
+    color: #17231F;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+#url-input {
+    display: block;
+    width: 100%;
+    min-height: 54px;
+    padding: 14px;
+    border: 1px solid #DCE1D5;
+    border-radius: 10px;
+    outline: none;
+    background: #F9FAF6;
+    color: #17231F;
+    font: inherit;
+    font-size: 14px;
+    transition: border-color 0.2s ease,
+                box-shadow 0.2s ease;
+}
+
+#url-input:focus {
+    border-color: #819C55;
+    box-shadow: 0 0 0 3px rgba(129, 156, 85, 0.15);
+}
+
+.url-hostname-box {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    margin-top: 20px;
+    padding: 15px;
+    border: 1px solid #E3E7DE;
+    border-radius: 10px;
+    background: #F9FAF6;
+}
+
+.url-hostname-box span {
+    color: #78847A;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 1.2px;
+}
+
+.url-hostname-box strong {
+    overflow-wrap: anywhere;
+    color: #26372E;
+    font-size: 13px;
+}
+
+
+/* Responsive layout */
+
+@media (max-width: 850px) {
+
+    .url-scanner-grid {
+        grid-template-columns: 1fr;
+        gap: 35px;
+    }
+
+    .url-scanner-intro {
+        max-width: 600px;
+    }
+
+}
+
+@media (max-width: 600px) {
+
+    .url-scanner-section {
+        padding: 65px 0;
+    }
+
+    .url-scanner-panel {
+        padding: 19px;
+    }
+
+    .url-panel-header h3 {
+        font-size: 23px;
+    }
+
+}

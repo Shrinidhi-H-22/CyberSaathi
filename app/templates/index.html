@@ -371,6 +371,202 @@ CyberSaathi | Pause. Check. Stay safe.
 
 </section>
 
+<!-- INTERACTIVE URL SCANNER -->
+
+<section class="url-scanner-section" id="url-scanner">
+
+    <div class="container url-scanner-grid">
+
+        <div class="url-scanner-intro">
+
+            <p class="eyebrow">
+                LOOK CLOSER BEFORE YOU CLICK
+            </p>
+
+            <h2>
+                Every link has
+                <span>a destination.</span>
+            </h2>
+
+            <p class="url-description">
+                A familiar-looking link isn't always what it seems.
+                Examine its structure and discover warning signs
+                before deciding whether to visit it.
+            </p>
+
+            <div class="scanner-trust-note">
+                <span class="status-dot"></span>
+                Structural analysis. No website visits.
+            </div>
+
+        </div>
+
+
+        <div class="url-scanner-panel">
+
+            <div class="url-panel-header">
+
+                <div>
+                    <p class="card-kicker">
+                        URL SECURITY CHECK
+                    </p>
+
+                    <h3>Where does this link lead?</h3>
+                </div>
+
+                <span class="scanner-icon" aria-hidden="true">
+                    ↗
+                </span>
+
+            </div>
+
+
+            <form id="url-scan-form">
+
+                <label for="url-input">
+                    Paste the website address
+                </label>
+
+                <input
+                    type="text"
+                    id="url-input"
+                    name="url"
+                    maxlength="2048"
+                    inputmode="url"
+                    autocapitalize="off"
+                    spellcheck="false"
+                    autocomplete="url"
+                    required
+                    placeholder="https://example.com"
+                >
+
+                <div class="scanner-meta">
+
+                    <span id="url-character-count">
+                        0 / 2048 characters
+                    </span>
+
+                    <span>
+                        Maximum 2048 characters
+                    </span>
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="scan-button"
+                    id="url-analyze-button"
+                >
+
+                    <span class="url-button-text">
+                        Analyse URL
+                    </span>
+
+                    <span
+                        class="loading-spinner"
+                        id="url-loading-spinner"
+                        hidden
+                        aria-hidden="true"
+                    ></span>
+
+                    <span class="button-arrow" aria-hidden="true">
+                        ↗
+                    </span>
+
+                </button>
+
+
+                <p
+                    class="scan-status"
+                    id="url-scan-status"
+                    role="status"
+                    aria-live="polite"
+                >
+                    Your link is checked for structural warning signs.
+                </p>
+
+            </form>
+
+
+            <!-- URL ANALYSIS RESULTS -->
+
+            <div
+                class="url-scan-result"
+                id="url-scan-result"
+                hidden
+                aria-live="polite"
+            >
+
+                <div class="result-divider"></div>
+
+                <div class="result-heading">
+
+                    <div>
+                        <p class="card-kicker">
+                            URL ANALYSIS SUMMARY
+                        </p>
+
+                        <h3 id="url-result-title">
+                            Analysis complete
+                        </h3>
+                    </div>
+
+                    <span
+                        class="risk-badge"
+                        id="url-risk-badge"
+                    ></span>
+
+                </div>
+
+
+                <div class="url-hostname-box">
+
+                    <span>ANALYSED HOSTNAME</span>
+
+                    <strong id="url-result-hostname"></strong>
+
+                </div>
+
+
+                <p class="indicator-score">
+                    Indicator score:
+                    <strong id="url-indicator-score">0</strong>
+                    <span> (not a probability)</span>
+                </p>
+
+
+                <p
+                    class="result-summary"
+                    id="url-result-summary"
+                ></p>
+
+
+                <div class="findings-container">
+
+                    <h4>What did we notice?</h4>
+
+                    <ul
+                        class="findings-list"
+                        id="url-findings-list"
+                    ></ul>
+
+                </div>
+
+
+                <p
+                    class="result-disclaimer"
+                    id="url-result-disclaimer"
+                ></p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
 
 <!-- HOW IT WORKS SECTION -->
 
