@@ -1,4 +1,12 @@
+import sqlite3
 
+from flask import current_app
+
+from app.services.history_service import (
+    save_scan,
+    get_recent_scans,
+    clear_scan_history
+)
 from flask import Blueprint, jsonify, render_template, request
 
 from app.services.message_analyzer import (
@@ -15,12 +23,39 @@ from app.services.url_analyzer import (
 # Create the main website blueprint
 main_bp = Blueprint("main", __name__)
 
+def attach_history_status(scan_type, result):
+    """
+    Save scan metadata without interrupting a successful analysis
+    if a temporary SQLite database error occurs.
+    """
+
+    try:
+        history_id = save_scan(scan_type, result)
+
+        result["history_id"] = history_id
+        result["history_saved"] = True
+
+    except sqlite3.Error:
+
+        current_app.logger.exception(
+            "Scan completed, but history could not be saved."
+        )
+
+        result["history_id"] = None
+        result["history_saved"] = False
+
+    return result
+
+
 
 # Homepage route
 @main_bp.route("/")
 def home():
     return render_template("index.html")
-
+# Scan history dashboard page
+@main_bp.route("/history")
+def history_page():
+    return render_template("history.html")
 
 # Message analysis API
 @main_bp.route("/api/analyze-message", methods=["POST"])
@@ -65,6 +100,8 @@ def analyze_message_api():
         return jsonify({
             "error": str(error)
         }), 400
+
+    result = attach_history_status("message", result)
 
     return jsonify(result), 200
 
@@ -113,4 +150,73 @@ def analyze_url_api():
             "error": str(error)
         }), 400
 
+    result = attach_history_status("url", result)
+
     return jsonify(result), 200
+
+# Scan history API
+@main_bp.route("/api/history", methods=["GET"])
+def scan_history_api():
+
+    # Read optional history limit.
+    limit_value = request.args.get("limit")
+
+    if limit_value is None:
+        limit = None
+
+    else:
+        try:
+            limit = int(limit_value)
+
+        except ValueError:
+            return jsonify({
+                "error": "History limit must be a valid number."
+            }), 400
+
+    try:
+        scans = get_recent_scans(limit)
+
+        return jsonify({
+            "count": len(scans),
+            "scans": scans
+        }), 200
+
+    except ValueError as error:
+        return jsonify({
+            "error": str(error)
+        }), 400
+
+    except sqlite3.Error:
+
+        current_app.logger.exception(
+            "Unable to retrieve scan history."
+        )
+
+        return jsonify({
+            "error": "Unable to retrieve scan history."
+        }), 500
+
+
+# Clear scan history API
+@main_bp.route("/api/history", methods=["DELETE"])
+def delete_scan_history_api():
+
+    try:
+
+        deleted_count = clear_scan_history()
+
+        return jsonify({
+            "success": True,
+            "deleted_count": deleted_count,
+            "message": "Scan history cleared successfully."
+        }), 200
+
+    except sqlite3.Error:
+
+        current_app.logger.exception(
+            "Unable to clear scan history."
+        )
+
+        return jsonify({
+            "error": "Unable to clear scan history."
+        }), 500

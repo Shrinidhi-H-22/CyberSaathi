@@ -1,0 +1,274 @@
+
+{% extends "base.html" %}
+
+{% block title %}
+Scan History | CyberSaathi
+{% endblock %}
+
+{% block extra_css %}
+<link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='css/history.css') }}"
+>
+{% endblock %}
+
+
+{% block content %}
+
+<section class="history-hero">
+
+    <div class="container">
+
+        <p class="eyebrow">
+            YOUR DIGITAL SAFETY RECORD
+        </p>
+
+        <h1>
+            A clearer view of
+            <span>your safety journey.</span>
+        </h1>
+
+        <p class="history-intro">
+            Review your previous message and URL analyses
+            in one place. Understand the warning signs
+            you've encountered.
+        </p>
+
+        <div class="history-hero-actions">
+
+            <a href="{{ url_for('main.home') }}#scanner"
+               class="button button-primary">
+                New message scan ↗
+            </a>
+
+            <a href="{{ url_for('main.home') }}#url-scanner"
+               class="history-text-link">
+                New URL scan
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<section class="history-dashboard-section">
+
+    <div class="container">
+
+        <div class="history-heading">
+
+            <div>
+                <p class="eyebrow">OVERVIEW</p>
+                <h2>Your scan activity</h2>
+                <p>
+                    A summary of your most recent saved analyses.
+                </p>
+            </div>
+
+            <div class="history-actions">
+
+                <button
+                    type="button"
+                    id="refresh-history"
+                    class="history-refresh-button"
+                >
+                    ↻ Refresh
+                </button>
+
+                <button
+                    type="button"
+                    id="clear-history"
+                    class="history-clear-button"
+                    disabled
+                >
+                    Clear history
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- DASHBOARD STATISTICS -->
+
+        <div class="history-stats-grid">
+
+            <article class="history-stat-card">
+
+                <span class="history-stat-label">
+                    TOTAL SCANS
+                </span>
+
+                <strong id="total-scans">0</strong>
+
+                <span class="history-stat-note">
+                    Saved analyses
+                </span>
+
+            </article>
+
+
+            <article class="history-stat-card">
+
+                <span class="history-stat-label">
+                    MESSAGE SCANS
+                </span>
+
+                <strong id="message-scans">0</strong>
+
+                <span class="history-stat-note">
+                    Text analysis
+                </span>
+
+            </article>
+
+
+            <article class="history-stat-card">
+
+                <span class="history-stat-label">
+                    URL SCANS
+                </span>
+
+                <strong id="url-scans">0</strong>
+
+                <span class="history-stat-note">
+                    Link analysis
+                </span>
+
+            </article>
+
+
+            <article class="history-stat-card">
+
+                <span class="history-stat-label">
+                    HIGH INDICATORS
+                </span>
+
+                <strong id="high-scans">0</strong>
+
+                <span class="history-stat-note">
+                    Preliminary high-risk results
+                </span>
+
+            </article>
+
+        </div>
+
+
+        <!-- HISTORY TABLE -->
+
+        <div class="history-table-card">
+
+            <div class="history-table-heading">
+
+                <div>
+                    <h3>Recent activity</h3>
+
+                    <p>
+                        Your latest saved scan records.
+                    </p>
+                </div>
+
+                <span class="history-record-label"
+                      id="history-record-count">
+                    0 records
+                </span>
+
+            </div>
+
+
+            <p
+                id="history-status"
+                class="history-status"
+                role="status"
+                aria-live="polite"
+            >
+                Loading your scan history...
+            </p>
+
+
+            <div
+                class="history-empty-state"
+                id="history-empty"
+                hidden
+            >
+
+                <div class="history-empty-icon">
+                    ↗
+                </div>
+
+                <h3>No scans recorded yet</h3>
+
+                <p>
+                    Your completed message and URL analyses
+                    will appear here.
+                </p>
+
+                <a href="{{ url_for('main.home') }}#scanner"
+                   class="button button-primary">
+                    Start your first scan
+                </a>
+
+            </div>
+
+
+            <div
+                class="history-table-wrapper"
+                id="history-table-wrapper"
+                hidden
+            >
+
+                <table class="history-table">
+
+                    <thead>
+                        <tr>
+                            <th>Date and time</th>
+                            <th>Scan type</th>
+                            <th>Risk indicators</th>
+                            <th>Score</th>
+                            <th>Findings</th>
+                            <th>Links</th>
+                            <th>Summary</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="history-table-body">
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+
+        <div class="history-privacy-note">
+
+            <span aria-hidden="true">i</span>
+
+            <p>
+                Your history stores analysis metadata only.
+                Original message text and complete URLs are not
+                stored. This local application does not yet
+                provide separate histories for multiple users.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}
+
+
+{% block scripts %}
+
+<script
+    src="{{ url_for('static', filename='js/history.js') }}"
+    defer
+></script>
+
+{% endblock %}

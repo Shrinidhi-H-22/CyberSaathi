@@ -17,7 +17,9 @@
 
     <link rel="stylesheet"
           href="{{ url_for('static', filename='css/style.css') }}">
+{% block extra_css %}{% endblock %}
 </head>
+
 
 <body>
 
@@ -43,6 +45,9 @@
             <nav class="site-nav" aria-label="Main navigation">
                 <a href="#url-scanner" class="nav-link">
     URL scanner
+    <a href="{{ url_for('main.history_page') }}" class="nav-link">
+    Scan history
+</a>
 </a>
                 <a href="#scanner" class="nav-link">
     Message scanner
@@ -119,10 +124,14 @@
 
     </footer>
 
+{% block scripts %}
+
 <script
     src="{{ url_for('static', filename='js/scanner.js') }}"
     defer
 ></script>
+
+{% endblock %}
 
 </body>
 </html>
