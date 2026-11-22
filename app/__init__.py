@@ -19,13 +19,14 @@ def create_app(test_config=None):
 
     # Default database configuration.
     app.config.from_mapping(
-
         DATABASE=os.path.join(
             app.instance_path,
             "cybersaathi.sqlite3"
         ),
+        HISTORY_LIMIT=100,
 
-        HISTORY_LIMIT=100
+        # Maximum size allowed for one incoming request.
+        MAX_CONTENT_LENGTH=64 * 1024
     )
 
     # Allow custom configuration for automated tests.
@@ -37,6 +38,23 @@ def create_app(test_config=None):
 
     # Register website routes.
     app.register_blueprint(main_bp)
+        # Add security headers to every response.
+    @app.after_request
+    def add_security_headers(response):
+
+        response.headers["X-Content-Type-Options"] = "nosniff"
+
+        response.headers["X-Frame-Options"] = "DENY"
+
+        response.headers["Referrer-Policy"] = (
+            "strict-origin-when-cross-origin"
+        )
+
+        response.headers["Permissions-Policy"] = (
+            "camera=(), microphone=(), geolocation=()"
+        )
+
+        return response
 
     # Initialize the local database.
     initialize_history_database(app)

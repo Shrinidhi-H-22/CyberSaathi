@@ -90,6 +90,15 @@ class URLApiTests(unittest.TestCase):
 
         self.assertEqual(response.status_code, 400)
 
+    def test_malformed_url_is_rejected(self):
+
+        response = self.client.post(
+            "/api/analyze-url",
+            json={"url": "https://-invalid-.com"}
+        )
+
+        self.assertEqual(response.status_code, 400)
+
 
 if __name__ == "__main__":
     unittest.main()

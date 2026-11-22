@@ -60,12 +60,18 @@ def _parse_url(url):
     else:
         normalized_url = "https://" + url
 
+    # Parse the normalized URL and validate its hostname and port.
     try:
         parsed = urlsplit(normalized_url)
-
         hostname = parsed.hostname
 
-        # Accessing port performs additional port validation.
+        # Reject an explicitly supplied but empty port.
+        host_port = parsed.netloc.rsplit("@", 1)[-1]
+
+        if host_port.endswith(":"):
+            raise ValueError("The URL contains an empty port.")
+
+        # Validate the port number.
         parsed.port
 
     except ValueError as error:
@@ -114,13 +120,22 @@ def analyze_url(url):
             f"URL must not exceed {MAX_URL_LENGTH} characters."
         )
 
+    # Reject spaces and control characters.
     if any(
-        character.isspace() or ord(character) < 32
+        character.isspace()
+        or ord(character) < 32
         or ord(character) == 127
         for character in url
     ):
         raise ValueError(
             "The URL must not contain spaces or control characters."
+        )
+
+    # Reject backslashes because browsers and URL parsers
+    # may interpret them differently.
+    if "\\" in url:
+        raise ValueError(
+            "The URL must not contain backslashes."
         )
 
     parsed, hostname = _parse_url(url)

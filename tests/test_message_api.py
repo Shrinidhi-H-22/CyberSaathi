@@ -17,6 +17,30 @@ class MessageApiTests(unittest.TestCase):
 
         self.assertEqual(response.status_code, 200)
 
+    def test_security_headers_are_present(self):
+
+        response = self.client.get("/")
+
+        self.assertEqual(
+            response.headers.get("X-Content-Type-Options"),
+            "nosniff"
+        )
+
+        self.assertEqual(
+            response.headers.get("X-Frame-Options"),
+            "DENY"
+        )
+
+        self.assertEqual(
+            response.headers.get("Referrer-Policy"),
+            "strict-origin-when-cross-origin"
+        )
+
+        self.assertEqual(
+            response.headers.get("Permissions-Policy"),
+            "camera=(), microphone=(), geolocation=()"
+        )
+
     def test_valid_message_returns_analysis(self):
 
         response = self.client.post(
@@ -68,6 +92,15 @@ class MessageApiTests(unittest.TestCase):
         response = self.client.post(
             "/api/analyze-message",
             json={"message": "A" * 5001}
+        )
+
+        self.assertEqual(response.status_code, 400)
+
+    def test_non_string_message_is_rejected(self):
+
+        response = self.client.post(
+            "/api/analyze-message",
+            json={"message": 123}
         )
 
         self.assertEqual(response.status_code, 400)

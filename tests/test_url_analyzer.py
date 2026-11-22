@@ -98,7 +98,21 @@ class URLAnalyzerTests(unittest.TestCase):
             "punycode_domain",
             [item["code"] for item in result["findings"]]
         )
+    def test_url_with_backslash_is_rejected(self):
+        with self.assertRaises(ValueError):
+            analyze_url("https://example.com\\@evil.example")
 
+    def test_url_with_empty_port_is_rejected(self):
+        with self.assertRaises(ValueError):
+            analyze_url("https://example.com:")
+
+    def test_url_with_control_character_is_rejected(self):
+        with self.assertRaises(ValueError):
+            analyze_url("https://example.com/\nlogin")
+
+    def test_malformed_domain_is_rejected(self):
+        with self.assertRaises(ValueError):
+            analyze_url("https://-invalid-.com")
 
 if __name__ == "__main__":
     unittest.main()
