@@ -2,6 +2,7 @@
 import os
 
 from flask import Flask
+from dotenv import load_dotenv
 
 from app.routes.main import main_bp
 
@@ -11,6 +12,9 @@ from app.services.history_service import (
 
 
 def create_app(test_config=None):
+
+    # Load environment variables from the project .env file.
+    load_dotenv()
 
     app = Flask(
         __name__,
@@ -38,7 +42,8 @@ def create_app(test_config=None):
 
     # Register website routes.
     app.register_blueprint(main_bp)
-        # Add security headers to every response.
+
+    # Add security headers to every response.
     @app.after_request
     def add_security_headers(response):
 

@@ -1,13 +1,19 @@
+
 import sqlite3
 
-from flask import current_app
+from flask import (
+    Blueprint,
+    current_app,
+    jsonify,
+    render_template,
+    request
+)
 
 from app.services.history_service import (
     save_scan,
     get_recent_scans,
     clear_scan_history
 )
-from flask import Blueprint, jsonify, render_template, request
 
 from app.services.message_analyzer import (
     MAX_MESSAGE_LENGTH,
@@ -19,9 +25,12 @@ from app.services.url_analyzer import (
     analyze_url
 )
 
+from app.services.urlhaus_service import lookup_urlhaus
+
 
 # Create the main website blueprint
 main_bp = Blueprint("main", __name__)
+
 
 def attach_history_status(scan_type, result):
     """
@@ -47,15 +56,17 @@ def attach_history_status(scan_type, result):
     return result
 
 
-
 # Homepage route
 @main_bp.route("/")
 def home():
     return render_template("index.html")
+
+
 # Scan history dashboard page
 @main_bp.route("/history")
 def history_page():
     return render_template("history.html")
+
 
 # Message analysis API
 @main_bp.route("/api/analyze-message", methods=["POST"])
@@ -142,6 +153,7 @@ def analyze_url_api():
             )
         }), 400
 
+    # First perform the existing structural URL analysis.
     try:
         result = analyze_url(url)
 
@@ -150,9 +162,36 @@ def analyze_url_api():
             "error": str(error)
         }), 400
 
+    # Then perform the additional URLhaus threat-intelligence lookup.
+    # An external lookup failure must not interrupt structural analysis.
+    try:
+        urlhaus_result = lookup_urlhaus(url)
+
+        if not isinstance(urlhaus_result, dict):
+            urlhaus_result = {
+                "status": "unavailable",
+                "reason": "invalid_service_response"
+            }
+
+    except Exception:
+
+        current_app.logger.exception(
+            "URLhaus lookup failed. Structural analysis will continue."
+        )
+
+        urlhaus_result = {
+            "status": "unavailable",
+            "reason": "lookup_error"
+        }
+
+    # Add the external threat-intelligence result to the API response.
+    result["urlhaus"] = urlhaus_result
+
+    # Save only the existing non-sensitive scan metadata.
     result = attach_history_status("url", result)
 
     return jsonify(result), 200
+
 
 # Scan history API
 @main_bp.route("/api/history", methods=["GET"])

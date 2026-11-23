@@ -1,9 +1,9 @@
+
 {% extends "base.html" %}
 
 {% block title %}
 CyberSaathi | Pause. Check. Stay safe.
 {% endblock %}
-
 
 {% block content %}
 
@@ -49,15 +49,11 @@ CyberSaathi | Pause. Check. Stay safe.
             </div>
 
             <div class="hero-note">
-
                 <span class="status-dot"></span>
-
                 Clear explanations. No scare tactics.
-
             </div>
 
         </div>
-
 
         <!-- VISUAL ANALYSIS PREVIEW -->
 
@@ -66,20 +62,16 @@ CyberSaathi | Pause. Check. Stay safe.
             <div class="analysis-card">
 
                 <div class="card-topline">
-
                     <span>CYBERSAATHI / FIELD NOTE 001</span>
 
                     <span class="preview-label">
                         DEMO PREVIEW
                     </span>
-
                 </div>
-
 
                 <div class="card-heading-row">
 
                     <div>
-
                         <p class="card-kicker">
                             THE EVERYDAY CHECK
                         </p>
@@ -88,7 +80,6 @@ CyberSaathi | Pause. Check. Stay safe.
                             Looks familiar.<br>
                             But is it safe?
                         </h2>
-
                     </div>
 
                     <div class="scan-symbol" aria-hidden="true">
@@ -97,17 +88,14 @@ CyberSaathi | Pause. Check. Stay safe.
 
                 </div>
 
-
                 <div class="message-preview">
 
                     <div class="message-label">
-
                         <span>EXAMPLE MESSAGE</span>
 
                         <span class="message-source">
                             SMS
                         </span>
-
                     </div>
 
                     <p>
@@ -117,57 +105,45 @@ CyberSaathi | Pause. Check. Stay safe.
 
                 </div>
 
-
                 <p class="signal-heading">
                     WARNING SIGNS TO LEARN ABOUT
                 </p>
 
-
                 <div class="signal-list">
 
                     <div class="signal-item">
-
                         <span class="signal-icon">!</span>
 
                         <div class="signal-text">
-
                             <strong>Urgency language</strong>
 
                             <small>
                                 Pressure to act quickly
                             </small>
-
                         </div>
 
                         <span class="signal-tag">
                             NOTICE
                         </span>
-
                     </div>
 
-
                     <div class="signal-item">
-
                         <span class="signal-icon">↗</span>
 
                         <div class="signal-text">
-
                             <strong>Unknown destination</strong>
 
                             <small>
                                 A link you weren't expecting
                             </small>
-
                         </div>
 
                         <span class="signal-tag">
                             CHECK
                         </span>
-
                     </div>
 
                 </div>
-
 
                 <p class="preview-footnote">
                     Illustrative example only · Not a live scan
@@ -217,7 +193,6 @@ CyberSaathi | Pause. Check. Stay safe.
 
         </div>
 
-
         <div class="scanner-panel">
 
             <div class="scanner-panel-header">
@@ -235,7 +210,6 @@ CyberSaathi | Pause. Check. Stay safe.
                 </span>
 
             </div>
-
 
             <form id="message-scan-form">
 
@@ -264,7 +238,6 @@ CyberSaathi | Pause. Check. Stay safe.
 
                 </div>
 
-
                 <button
                     type="submit"
                     class="scan-button"
@@ -288,7 +261,6 @@ CyberSaathi | Pause. Check. Stay safe.
 
                 </button>
 
-
                 <p
                     class="scan-status"
                     id="scan-status"
@@ -300,7 +272,6 @@ CyberSaathi | Pause. Check. Stay safe.
                 </p>
 
             </form>
-
 
             <!-- ANALYSIS RESULTS -->
 
@@ -332,19 +303,16 @@ CyberSaathi | Pause. Check. Stay safe.
 
                 </div>
 
-
                 <p class="indicator-score">
                     Indicator score:
                     <strong id="indicator-score">0</strong>
                     <span> (not a probability)</span>
                 </p>
 
-
                 <p
                     class="result-summary"
                     id="result-summary"
                 ></p>
-
 
                 <div class="findings-container">
 
@@ -356,7 +324,6 @@ CyberSaathi | Pause. Check. Stay safe.
                     ></ul>
 
                 </div>
-
 
                 <p
                     class="result-disclaimer"
@@ -370,6 +337,7 @@ CyberSaathi | Pause. Check. Stay safe.
     </div>
 
 </section>
+
 
 <!-- INTERACTIVE URL SCANNER -->
 
@@ -401,7 +369,6 @@ CyberSaathi | Pause. Check. Stay safe.
 
         </div>
 
-
         <div class="url-scanner-panel">
 
             <div class="url-panel-header">
@@ -419,7 +386,6 @@ CyberSaathi | Pause. Check. Stay safe.
                 </span>
 
             </div>
-
 
             <form id="url-scan-form">
 
@@ -452,6 +418,22 @@ CyberSaathi | Pause. Check. Stay safe.
 
                 </div>
 
+                <!-- URLHAUS PRIVACY NOTICE -->
+
+                <div class="url-privacy-notice" role="note">
+
+                    <strong>External URL check</strong>
+
+                    <p>
+                        When you scan a URL, CyberSaathi may share
+                        its full address with URLhaus, an external
+                        threat-intelligence service, to check for
+                        known malware-related threats. Avoid
+                        submitting URLs containing passwords,
+                        private tokens or confidential information.
+                    </p>
+
+                </div>
 
                 <button
                     type="submit"
@@ -476,7 +458,6 @@ CyberSaathi | Pause. Check. Stay safe.
 
                 </button>
 
-
                 <p
                     class="scan-status"
                     id="url-scan-status"
@@ -487,7 +468,6 @@ CyberSaathi | Pause. Check. Stay safe.
                 </p>
 
             </form>
-
 
             <!-- URL ANALYSIS RESULTS -->
 
@@ -519,7 +499,6 @@ CyberSaathi | Pause. Check. Stay safe.
 
                 </div>
 
-
                 <div class="url-hostname-box">
 
                     <span>ANALYSED HOSTNAME</span>
@@ -528,18 +507,53 @@ CyberSaathi | Pause. Check. Stay safe.
 
                 </div>
 
-
                 <p class="indicator-score">
                     Indicator score:
                     <strong id="url-indicator-score">0</strong>
                     <span> (not a probability)</span>
                 </p>
 
-
                 <p
                     class="result-summary"
                     id="url-result-summary"
                 ></p>
+
+<!-- URLHAUS THREAT INTELLIGENCE RESULTS -->
+
+<div
+    class="urlhaus-result"
+    id="urlhaus-result"
+    hidden
+    aria-live="polite"
+>
+
+    <div class="urlhaus-heading">
+
+        <div>
+            <p class="card-kicker">
+                EXTERNAL THREAT INTELLIGENCE
+            </p>
+
+            <h4>URLhaus security check</h4>
+        </div>
+
+        <span
+            class="urlhaus-status"
+            id="urlhaus-status"
+        ></span>
+
+    </div>
+
+    <p
+        class="urlhaus-description"
+        id="urlhaus-description"
+    ></p>
+
+    <p class="urlhaus-source">
+        Source: URLhaus · abuse.ch
+    </p>
+
+</div>
 
 
                 <div class="findings-container">
@@ -552,7 +566,6 @@ CyberSaathi | Pause. Check. Stay safe.
                     ></ul>
 
                 </div>
-
 
                 <p
                     class="result-disclaimer"
@@ -592,9 +605,7 @@ CyberSaathi | Pause. Check. Stay safe.
 
         </div>
 
-
         <div class="steps-grid">
-
 
             <article class="step-card">
 
@@ -612,7 +623,6 @@ CyberSaathi | Pause. Check. Stay safe.
 
             </article>
 
-
             <article class="step-card">
 
                 <span class="step-number">02</span>
@@ -628,7 +638,6 @@ CyberSaathi | Pause. Check. Stay safe.
                 </p>
 
             </article>
-
 
             <article class="step-card">
 
@@ -646,7 +655,6 @@ CyberSaathi | Pause. Check. Stay safe.
 
             </article>
 
-
         </div>
 
         <p class="section-note">
@@ -657,7 +665,6 @@ CyberSaathi | Pause. Check. Stay safe.
     </div>
 
 </section>
-
 
 
 <!-- ABOUT SECTION -->
@@ -679,7 +686,6 @@ CyberSaathi | Pause. Check. Stay safe.
             </h2>
 
         </div>
-
 
         <div class="about-copy">
 

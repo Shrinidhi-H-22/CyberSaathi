@@ -1246,3 +1246,109 @@ a {
     }
 
 }
+
+
+/* =========================================
+   URLHAUS THREAT INTELLIGENCE RESULTS
+========================================= */
+
+.urlhaus-result {
+    margin: 18px 0;
+    padding: 18px;
+    border: 1px solid #DFE2D7;
+    border-radius: 10px;
+    background: #F5F7EF;
+}
+
+.urlhaus-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.urlhaus-heading h4 {
+    margin: 4px 0 0;
+    color: #17231F;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.urlhaus-status {
+    display: inline-block;
+    padding: 6px 11px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.urlhaus-found {
+    color: #9D3025;
+    background: #FCE5E0;
+}
+
+.urlhaus-not-found {
+    color: #42632D;
+    background: #E9F1DF;
+}
+
+.urlhaus-unavailable {
+    color: #725B28;
+    background: #F5EEDB;
+}
+
+.urlhaus-description {
+    margin: 0;
+    color: #526159;
+    font-size: 12px;
+    line-height: 1.8;
+}
+
+.urlhaus-source {
+    margin: 12px 0 0;
+    color: #7A857C;
+    font-size: 10px;
+}
+
+@media (max-width: 600px) {
+    .urlhaus-result {
+        padding: 14px;
+    }
+}
+
+
+/* =========================================
+   URLHAUS - EXTERNAL PRIVACY NOTICE
+========================================= */
+
+.url-privacy-notice {
+    margin: 16px 0 18px;
+    padding: 15px 17px;
+    border: 1px solid #DFE2D7;
+    border-left: 3px solid #819C55;
+    border-radius: 9px;
+    background: #F5F7EF;
+}
+
+.url-privacy-notice strong {
+    display: block;
+    margin-bottom: 6px;
+    color: #26372E;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.url-privacy-notice p {
+    margin: 0;
+    color: #66736A;
+    font-size: 11px;
+    line-height: 1.8;
+}
+
+@media (max-width: 600px) {
+    .url-privacy-notice {
+        padding: 13px;
+    }
+}

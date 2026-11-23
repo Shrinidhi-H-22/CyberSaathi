@@ -2,6 +2,7 @@
 import os
 import tempfile
 import unittest
+from unittest.mock import patch
 
 from app import create_app
 from app.services.history_service import get_recent_scans
@@ -69,7 +70,14 @@ class ScanHistoryIntegrationTests(unittest.TestCase):
         self.assertNotIn("original_message", records[0])
 
 
-    def test_url_scan_is_saved_automatically(self):
+    @patch(
+        "app.routes.main.lookup_urlhaus",
+        return_value={
+            "status": "not_found",
+            "source": "URLhaus"
+        }
+    )
+    def test_url_scan_is_saved_automatically(self, mock_urlhaus):
 
         response = self.client.post(
             "/api/analyze-url",
@@ -82,9 +90,18 @@ class ScanHistoryIntegrationTests(unittest.TestCase):
 
         self.assertEqual(response.status_code, 200)
 
+        self.assertEqual(
+            data["urlhaus"]["status"],
+            "not_found"
+        )
+
         self.assertTrue(data["history_saved"])
 
         self.assertIsNotNone(data["history_id"])
+
+        mock_urlhaus.assert_called_once_with(
+            "https://bit.ly/example"
+        )
 
         with self.app.app_context():
 
@@ -107,8 +124,9 @@ class ScanHistoryIntegrationTests(unittest.TestCase):
             1
         )
 
-        # Original URL must not be stored.
+        # Original URL and URLhaus data must not be stored.
         self.assertNotIn("url", records[0])
+        self.assertNotIn("urlhaus", records[0])
 
 
 if __name__ == "__main__":

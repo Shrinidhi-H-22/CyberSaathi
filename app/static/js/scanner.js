@@ -1,7 +1,10 @@
 
 "use strict";
 
-// Find the scanner elements on the page.
+// =========================================
+// MESSAGE SCANNER ELEMENTS
+// =========================================
+
 const scanForm = document.getElementById("message-scan-form");
 const messageInput = document.getElementById("message-input");
 const analyzeButton = document.getElementById("analyze-button");
@@ -19,21 +22,30 @@ const findingsList = document.getElementById("findings-list");
 const resultDisclaimer = document.getElementById("result-disclaimer");
 
 
-// Update the character counter.
+// =========================================
+// MESSAGE CHARACTER COUNTER
+// =========================================
+
 messageInput.addEventListener("input", () => {
     characterCount.textContent =
         `${messageInput.value.length} / 5000 characters`;
 });
 
 
-// Display an error or information message.
+// =========================================
+// MESSAGE STATUS
+// =========================================
+
 function updateStatus(message, isError = false) {
     scanStatus.textContent = message;
     scanStatus.classList.toggle("error", isError);
 }
 
 
-// Display analysis results safely.
+// =========================================
+// DISPLAY MESSAGE ANALYSIS RESULTS
+// =========================================
+
 function displayResults(data) {
 
     const allowedRiskLevels = ["High", "Medium", "Low"];
@@ -59,7 +71,6 @@ function displayResults(data) {
 
     resultDisclaimer.textContent = data.disclaimer;
 
-    // Clear previous results.
     findingsList.replaceChildren();
 
     if (data.findings.length === 0) {
@@ -100,7 +111,6 @@ function displayResults(data) {
 
     scanResult.hidden = false;
 
-    // Bring the results into view for keyboard and screen-reader users.
     resultTitle.focus?.();
 
     scanResult.scrollIntoView({
@@ -110,14 +120,16 @@ function displayResults(data) {
 }
 
 
-// Send the message to the Flask API.
+// =========================================
+// MESSAGE SCANNER SUBMISSION
+// =========================================
+
 scanForm.addEventListener("submit", async (event) => {
 
     event.preventDefault();
 
     const message = messageInput.value.trim();
 
-    // Check for empty input.
     if (!message) {
 
         scanResult.hidden = true;
@@ -129,7 +141,6 @@ scanForm.addEventListener("submit", async (event) => {
         return;
     }
 
-    // Check the maximum message length.
     if (message.length > 5000) {
 
         scanResult.hidden = true;
@@ -139,7 +150,6 @@ scanForm.addEventListener("submit", async (event) => {
         return;
     }
 
-    // Prepare the loading state.
     analyzeButton.disabled = true;
 
     buttonText.textContent = "Analysing...";
@@ -189,7 +199,6 @@ scanForm.addEventListener("submit", async (event) => {
 
     } finally {
 
-        // Restore the button.
         analyzeButton.disabled = false;
 
         buttonText.textContent = "Analyse message";
@@ -198,9 +207,11 @@ scanForm.addEventListener("submit", async (event) => {
     }
 });
 
-"use strict";
 
-// URL scanner elements
+// =========================================
+// URL SCANNER ELEMENTS
+// =========================================
+
 const urlScanForm = document.getElementById("url-scan-form");
 const urlInput = document.getElementById("url-input");
 const urlAnalyzeButton = document.getElementById("url-analyze-button");
@@ -218,8 +229,16 @@ const urlResultSummary = document.getElementById("url-result-summary");
 const urlFindingsList = document.getElementById("url-findings-list");
 const urlResultDisclaimer = document.getElementById("url-result-disclaimer");
 
+// URLhaus result elements
+const urlhausResult = document.getElementById("urlhaus-result");
+const urlhausStatus = document.getElementById("urlhaus-status");
+const urlhausDescription = document.getElementById("urlhaus-description");
 
-// Update URL character counter
+
+// =========================================
+// URL CHARACTER COUNTER
+// =========================================
+
 urlInput.addEventListener("input", () => {
 
     urlCharacterCount.textContent =
@@ -228,7 +247,10 @@ urlInput.addEventListener("input", () => {
 });
 
 
-// Update URL scanner status
+// =========================================
+// URL SCANNER STATUS
+// =========================================
+
 function updateUrlStatus(message, isError = false) {
 
     urlScanStatus.textContent = message;
@@ -238,7 +260,79 @@ function updateUrlStatus(message, isError = false) {
 }
 
 
-// Display URL analysis results safely
+// =========================================
+// DISPLAY URLHAUS RESULTS
+// =========================================
+
+function displayUrlhausResults(data) {
+
+    urlhausResult.hidden = false;
+
+    // Handle missing or invalid URLhaus responses.
+    if (!data || typeof data !== "object") {
+
+        urlhausStatus.textContent = "Unavailable";
+
+        urlhausStatus.className =
+            "urlhaus-status urlhaus-unavailable";
+
+        urlhausDescription.textContent =
+            "The URLhaus lookup could not be completed. " +
+            "Only the structural URL analysis is available.";
+
+        return;
+    }
+
+    if (data.status === "found") {
+
+        urlhausStatus.textContent = "Threat listed";
+
+        urlhausStatus.className =
+            "urlhaus-status urlhaus-found";
+
+        let description =
+            "This URL is listed in URLhaus as a known " +
+            "malware-related threat. Avoid visiting it.";
+
+        if (
+            typeof data.threat === "string" &&
+            data.threat.trim()
+        ) {
+            description += ` Threat category: ${data.threat}.`;
+        }
+
+        urlhausDescription.textContent = description;
+
+    } else if (data.status === "not_found") {
+
+        urlhausStatus.textContent = "Not listed";
+
+        urlhausStatus.className =
+            "urlhaus-status urlhaus-not-found";
+
+        urlhausDescription.textContent =
+            "URLhaus did not find this URL in its database. " +
+            "This does not guarantee that the URL is safe.";
+
+    } else {
+
+        urlhausStatus.textContent = "Unavailable";
+
+        urlhausStatus.className =
+            "urlhaus-status urlhaus-unavailable";
+
+        urlhausDescription.textContent =
+            "The URLhaus lookup could not be completed. " +
+            "Only the structural URL analysis is available.";
+
+    }
+}
+
+
+// =========================================
+// DISPLAY URL ANALYSIS RESULTS
+// =========================================
+
 function displayUrlResults(data) {
 
     const allowedRiskLevels = ["High", "Medium", "Low"];
@@ -261,7 +355,6 @@ function displayUrlResults(data) {
 
     }
 
-
     urlResultTitle.textContent = "URL analysis complete";
 
     urlRiskBadge.textContent =
@@ -279,12 +372,12 @@ function displayUrlResults(data) {
 
     urlResultDisclaimer.textContent = data.disclaimer;
 
+    // Display URLhaus threat-intelligence results.
+    displayUrlhausResults(data.urlhaus);
 
-    // Remove previous URL findings
+    // Remove previous URL findings.
     urlFindingsList.replaceChildren();
 
-
-    // Display findings
     if (data.findings.length === 0) {
 
         const emptyMessage = document.createElement("li");
@@ -326,7 +419,6 @@ function displayUrlResults(data) {
 
     }
 
-
     urlScanResult.hidden = false;
 
     urlScanResult.scrollIntoView({
@@ -337,15 +429,16 @@ function displayUrlResults(data) {
 }
 
 
-// Submit the URL for analysis
+// =========================================
+// URL SCANNER SUBMISSION
+// =========================================
+
 urlScanForm.addEventListener("submit", async (event) => {
 
     event.preventDefault();
 
     const url = urlInput.value.trim();
 
-
-    // Validate empty input
     if (!url) {
 
         urlScanResult.hidden = true;
@@ -361,8 +454,6 @@ urlScanForm.addEventListener("submit", async (event) => {
 
     }
 
-
-    // Validate length
     if (url.length > 2048) {
 
         urlScanResult.hidden = true;
@@ -376,8 +467,6 @@ urlScanForm.addEventListener("submit", async (event) => {
 
     }
 
-
-    // Show loading state
     urlAnalyzeButton.disabled = true;
 
     urlButtonText.textContent = "Analysing URL...";
@@ -387,9 +476,8 @@ urlScanForm.addEventListener("submit", async (event) => {
     urlScanResult.hidden = true;
 
     updateUrlStatus(
-        "Checking the URL structure for warning signs..."
+        "Checking URL structure and external threat intelligence..."
     );
-
 
     try {
 
@@ -407,9 +495,7 @@ urlScanForm.addEventListener("submit", async (event) => {
 
         });
 
-
         const data = await response.json();
-
 
         if (!response.ok) {
 
@@ -419,13 +505,11 @@ urlScanForm.addEventListener("submit", async (event) => {
 
         }
 
-
         displayUrlResults(data);
 
         updateUrlStatus(
-            "URL analysis completed. Review the findings carefully."
+            "URL analysis completed. Review both checks carefully."
         );
-
 
     } catch (error) {
 
@@ -435,7 +519,6 @@ urlScanForm.addEventListener("submit", async (event) => {
             error.message || "Unable to connect to CyberSaathi.",
             true
         );
-
 
     } finally {
 

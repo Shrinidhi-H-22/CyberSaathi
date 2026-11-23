@@ -1,5 +1,6 @@
 
 import unittest
+from unittest.mock import patch
 
 from app import create_app
 
@@ -11,7 +12,14 @@ class URLApiTests(unittest.TestCase):
         self.app.config["TESTING"] = True
         self.client = self.app.test_client()
 
-    def test_valid_url_returns_analysis(self):
+    @patch(
+        "app.routes.main.lookup_urlhaus",
+        return_value={
+            "status": "not_found",
+            "source": "URLhaus"
+        }
+    )
+    def test_valid_url_returns_analysis(self, mock_urlhaus):
 
         response = self.client.post(
             "/api/analyze-url",
@@ -28,6 +36,76 @@ class URLApiTests(unittest.TestCase):
         self.assertIn(
             "shortened_url",
             [item["code"] for item in data["findings"]]
+        )
+
+        self.assertEqual(
+            data["urlhaus"]["status"],
+            "not_found"
+        )
+
+        mock_urlhaus.assert_called_once_with(
+            "https://bit.ly/example"
+        )
+
+    @patch(
+        "app.routes.main.lookup_urlhaus",
+        return_value={
+            "status": "found",
+            "source": "URLhaus",
+            "threat": "malware_download"
+        }
+    )
+    def test_urlhaus_detects_listed_url(self, mock_urlhaus):
+
+        response = self.client.post(
+            "/api/analyze-url",
+            json={
+                "url": "https://malicious.example/file"
+            }
+        )
+
+        data = response.get_json()
+
+        self.assertEqual(response.status_code, 200)
+
+        self.assertEqual(
+            data["urlhaus"]["status"],
+            "found"
+        )
+
+        self.assertEqual(
+            data["urlhaus"]["source"],
+            "URLhaus"
+        )
+
+    @patch(
+        "app.routes.main.lookup_urlhaus",
+        return_value={
+            "status": "unavailable",
+            "reason": "timeout"
+        }
+    )
+    def test_url_analysis_continues_when_urlhaus_is_unavailable(
+        self,
+        mock_urlhaus
+    ):
+
+        response = self.client.post(
+            "/api/analyze-url",
+            json={
+                "url": "https://example.com"
+            }
+        )
+
+        data = response.get_json()
+
+        self.assertEqual(response.status_code, 200)
+
+        self.assertIn("risk_level", data)
+
+        self.assertEqual(
+            data["urlhaus"]["status"],
+            "unavailable"
         )
 
     def test_empty_url_is_rejected(self):
